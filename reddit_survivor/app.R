@@ -17,7 +17,7 @@ library(dplyr)
 # cleaned_data <- YOUR_CLEANED_DATA_HERE
 
 ui <- dashboardPage(
-  dashboardHeader(title = "Survivor Data Dashboard"),
+  dashboardHeader(title = "Outwit. Outplay. OutData!"),
   
   dashboardSidebar(
     sidebarMenu(
@@ -138,11 +138,12 @@ server <- function(input, output) {
       coord_flip() +
       labs(
         title = paste("Reddit votes for predicted winner, Season", input$Season),
-        x = "Contestant",
+        x = "Castaway",
         y = "Number of Votes"
       ) +
       scale_fill_manual(name = "Legend",
-                        values = c("Sole Survivor" = "#f0dd52", "Losers" = "#299bd1")) +
+                        values = c("Sole Survivor" = "#f0dd52", "Other" = "#299bd1"),
+                        labels = c("Losers", "Sole Survivor")) +
       theme_minimal() +
       theme(legend.position = "bottom")
   })
