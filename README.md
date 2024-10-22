@@ -3,6 +3,7 @@
 
 Hello, welcome to my GitHub! You can view my projects and resume here. 
 
+### Bio
 I am an epidemiologist-turned-data-scientist. I have a passion for applying data science technologies to improve health! My background in epidemiology has equipped me with a deep understanding of disease dynamics, real world evidence (RWE), mathematical and statistical modeling, and clinical research. I enjoy communicating these domains to diverse audiences (lay people, researchers, and clinicians) via compelling data storytelling.
 
 Please feel free to connect via LinkedIn!  
