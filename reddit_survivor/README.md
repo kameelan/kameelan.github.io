@@ -1,13 +1,14 @@
 # Outwit. Outplay. Outdata.
 
 ## Visualizing r/survivor winner predictions
+Dashboard found here: https://5c3y16-kameela-noah.shinyapps.io/survivor_winner_prediction/
 
 ### Project Overview
 
 Survivor is a competition reality TV show run since 1997. Contestants,
 or "castaways," are marooned on remote islands around the world.
 Castaways compete in various challenges for rewards and immunity, fighting
-for the title of "Sole Survivor" and a $1 million award. Contestants are
+for the title of "Sole Survivor" and its $1 million award. Contestants are
 eliminated through votes by fellow castaways each week.
 
 Survivor has a wide-reaching, diverse fanbase. Fans love to discuss
@@ -58,13 +59,16 @@ amount of votes than losers.
 I decided to build a R Shiny dashboard to share my findings with the
 r/survivor community. THE DASHBAORD CONTAINS SPOILERS!
 
-### Results
+### Findings
 
 My analysis revealed:
 
--   
+- Castaways predicted to win had a higher median number of votes than those who didn’t win.
+- There was a statistically significant difference in the number of votes between winners and losers.
 
-### Considerations
+These results suggest r/survivor Redditors have the potential to correctly identify potential winners!
+
+### Limitations
 
 The availability of data for this analysis was limited; I evaluated data
 from 13 seasons out of 47. It is possible these 13 seasons are not
@@ -76,5 +80,3 @@ amount of positive cases could have led to bias. Due to this small
 sample size of winners, I was reluctant to perform statistical modelling
 that may have been inaccurate. Resulting models would have likely
 struggled to predict winners and have poor sensitivity.
-
-### Summary
