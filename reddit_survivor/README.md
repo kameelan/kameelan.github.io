@@ -1,17 +1,3 @@
----
-title: "README"
-author: "Kameela P. Noah"
-date: '2024-10-23'
-output: html_document
-editor_options: 
-  markdown: 
-    wrap: 72
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
 # Outwit. Outplay. Outdata.
 
 ## Visualizing r/survivor winner predictions
