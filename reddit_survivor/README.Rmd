@@ -12,11 +12,11 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-#Outwit. Outplay. Outdata.
+# Outwit. Outplay. Outdata.
 
-##Visualizing r/survivor winner predictions
+## Visualizing r/survivor winner predictions
 
-###Project Overview
+### Project Overview
 
 Survivor is a competition reality TV show run since 1997. Contestants,
 or "Castaways," are marooned on remote islands around the world.
@@ -40,7 +40,7 @@ distribution of winner prediction votes for winners and losers differed.
 Did winners have a higher number of votes than losers? *Could Reddit
 predict Sole Survivors?*
 
-###Methods
+### Methods
 
 I gathered winner prediction survey results from the r/survivor *Winner
 Pick Statistics* threads. These results are available under the *season
@@ -72,13 +72,13 @@ amount of votes than losers.
 I decided to build a R Shiny dashboard to share my findings with the
 r/survivor community. THE DASHBAORD CONTAINS SPOILERS!
 
-###Results
+### Results
 
 My analysis revealed:
 
 -   
 
-###Considerations
+### Considerations
 
 The availability of data for this analysis was limited; I evaluated data
 from 13 seasons out of 47. It is possible these 13 seasons are not
@@ -91,4 +91,4 @@ sample size of winners, I was reluctant to perform statistical modelling
 that may have been inaccurate. Resulting models would have likely
 struggled to predict winners and have poor sensitivity.
 
-###Summary
+### Summary
