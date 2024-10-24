@@ -56,7 +56,7 @@ seasons was also generated.
 I performed a Mann Whitney test to determine if winners had a different
 amount of votes than losers.
 
-*Easter Egg*: As an easter egg, I used the color palette for season 31. 
+*Easter Egg*: I used the color palette for season 31. 
 
 I decided to build a R Shiny dashboard to share my findings with the
 r/survivor community. THE DASHBAORD CONTAINS SPOILERS!
