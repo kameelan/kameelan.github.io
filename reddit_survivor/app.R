@@ -12,6 +12,7 @@ library(shiny)
 library(shinydashboard)
 library(ggplot2)
 library(dplyr)
+library(rsconnect)
 
 # Sample data, replace with your own data
 # cleaned_data <- YOUR_CLEANED_DATA_HERE
@@ -21,13 +22,21 @@ ui <- dashboardPage(
   
   dashboardSidebar(
     sidebarMenu(
-      menuItem("Winner Prediction Votes", tabName = "picks", icon = icon("bar-chart")),
-      menuItem("Winner Prediction Density Plot", tabName = "densityplot", icon = icon("chart-area")),
+      menuItem("Winner Predictions by Castaway", tabName = "picks", icon = icon("bar-chart")),
+      menuItem("Winner Predictions Distribution", tabName = "densityplot", icon = icon("chart-area")),
       uiOutput(outputId = "sidebarChoices")
     )
   ),
   
   dashboardBody(
+    tags$head(tags$style(HTML('
+      .skin-blue .main-header .logo {
+        width: 300px;
+      }
+      .skin-blue .main-header .navbar {
+        margin-left: 300px;
+      }
+      '))), 
     tabItems(
       # First tab content
       tabItem(tabName = "picks",
@@ -38,26 +47,40 @@ ui <- dashboardPage(
                   solidHeader = TRUE,
                   width = 12,
                   plotOutput(outputId = "picksPlot")
-                )
+                ),
               )),
       
       # Second tab content
       tabItem(tabName = "densityplot",
               fluidRow(
                 box(
-                  title = "Distribution of Reddit Winner Predictions",
+                  title = "Distribution of Reddit Winner Predictions, Seasons 31 - 43",
                   status = "primary",
                   solidHeader = TRUE,
                   width = 12,
                   plotOutput(outputId = "densityWinLose")
                 ),
                 box(
-                  title = "Overall Density of Reddit Winner Predictions",
+                  title = "Total Reddit winner prediction votes, Seasons 31 - 43",
                   status = "primary",
                   solidHeader = TRUE,
                   width = 12,
-                  plotOutput(outputId = "densityAll")
-                )
+                  tableOutput(outputId = "mannWhitneyData")
+                ),
+                box(
+                  title = "Mann-Whitney Test Results",
+                  status = "primary",
+                  solidHeader = TRUE,
+                  width = 12,
+                  tableOutput(outputId = "mannWhitneyTable")
+                ),
+                # box(
+                #   title = "Overall Density of Reddit Winner Predictions",
+                #   status = "primary",
+                #   solidHeader = TRUE,
+                #   width = 12,
+                #   plotOutput(outputId = "densityAll")
+                # )
               ))
     )
   )
@@ -67,11 +90,13 @@ server <- function(input, output) {
   
   library(tidyverse)
   library(dplyr)
+  library(purrr)
   library(readxl)
   library(ggplot2)
   library(survivoR)
   library(shinydashboard)
   library(shiny)
+  library(table1)
   
   #Read in dataset made from r/Survivor Winner Prediction spreadsheets and threads. 
   #NOTE: Season 44 was excluded from this analysis, bc r/Survivor did not collect winner predictions for this season. 
@@ -119,19 +144,20 @@ server <- function(input, output) {
       race == "Brazilian" ~ "Other",
       race == "Asian, Black" ~ "Multiracial"),
       winner = as.factor(case_when(
-        result == "Sole Survivor" ~ 1,
-        TRUE ~ 0))) %>%
-    mutate(season = as.character(season))
+        result == "Sole Survivor" ~ "Sole Survivor",
+        TRUE ~ "Loser")),
+      season = as.character(season))
+    
   
-  # Reactive data for the first plot
+  
+  #Reactive data for the first plot
   filtered_data <- reactive({
     cleaned_data %>% 
       filter(season == input$Season) %>%
       mutate(winner = ifelse(result == "Sole Survivor", "Sole Survivor", "Other"))
   })
   
-  # Render the picks plot
-  
+  #Render the plot for number of votes each contestant received 
   output$picksPlot <- renderPlot({
     ggplot(filtered_data(), aes(x = reorder(castaway.x, -Picks), y = Picks, fill = winner)) +
       geom_bar(stat = "identity") +
@@ -160,7 +186,7 @@ server <- function(input, output) {
         labels = c("Losers", "Sole Survivor")
       ) +
       labs(
-        title = "Density of Reddit votes for actual winners and losers, Seasons 31 - 43",
+        title = "Density of Reddit votes for winners and losers, Seasons 31 - 43",
         x = "Winner Prediction Votes",
         y = "Density"
       ) +
@@ -168,21 +194,46 @@ server <- function(input, output) {
       theme(legend.position = "bottom")
   })
   
+    
   #Render the overall density plot with the median line
-  output$densityAll <- renderPlot({
+  # output$densityAll <- renderPlot({
+  #   cleaned_data %>%
+  #     ggplot(aes(x = Picks)) +
+  #     geom_density(fill = "#299bd1", alpha = 0.5) +
+  #     geom_vline(aes(xintercept = median(Picks)),
+  #                linetype = "dashed",
+  #                size = 1) +
+  #     labs(
+  #       title = "Density of all preseason winner predictions, Seasons 31 - 43",
+  #       x = "Winner Prediction Votes",
+  #       y = "Density"
+  #     ) +
+  #     theme_minimal()
+  # })
+  
+  #Add spread of votes for castaways across seasons 31-43, grouped by 'winner,' to dashboard
+  output$mannWhitneyData <- renderTable({
     cleaned_data %>%
-      ggplot(aes(x = Picks)) +
-      geom_density(fill = "#299bd1", alpha = 0.5) +
-      geom_vline(aes(xintercept = median(Picks)),
-                 linetype = "dashed",
-                 size = 1) +
-      labs(
-        title = "Overall Density of Preseason Winner Predictions, Seasons 31 - 43",
-        x = "Winner Prediction Votes",
-        y = "Density"
-      ) +
-      theme_minimal()
+      group_by(winner) %>%
+      summarise("Total Number of Votes" = list(sum(Picks)),
+                Median = list(median(Picks)),
+                IQR = list(IQR(Picks))
+                )
   })
+  
+  #Add Mann Whitney results to server function
+  output$mannWhitneyTable <- renderTable({
+    #Format the Mann-Whitney test
+    cleaned_data %>%
+      summarise(mann_whitney = list(wilcox.test(Picks ~ winner, data = .))) %>%
+      mutate(
+        Statistic = map_dbl(mann_whitney, "statistic"),
+        P_Value = map_dbl(mann_whitney, "p.value"),
+        P_Value = ifelse(P_Value < 0.05, "<0.05", round(P_Value, 3))
+      ) %>%
+      select(Statistic, P_Value)})
+    
+  
   
 output$sidebarChoices <- renderUI({
     selectInput(
