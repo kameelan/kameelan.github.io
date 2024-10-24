@@ -96,7 +96,6 @@ server <- function(input, output) {
   library(survivoR)
   library(shinydashboard)
   library(shiny)
-  library(table1)
   
   #Read in dataset made from r/Survivor Winner Prediction spreadsheets and threads. 
   #NOTE: Season 44 was excluded from this analysis, bc r/Survivor did not collect winner predictions for this season. 
@@ -247,5 +246,5 @@ output$sidebarChoices <- renderUI({
 
 shinyApp(ui = ui, server = server)
 
-#deployApp(appName = "survivor_winner_prediction", appDir = "C:\\R\\portfolio\\survivor\\reddit_survivor")
+deployApp(appName = "survivor_winner_prediction", appDir = "C:\\R\\portfolio\\survivor\\reddit_survivor")
  
