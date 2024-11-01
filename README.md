@@ -1,5 +1,5 @@
 # Kameela Noah
-## Data Scientist
+## Data Scientist with Epidemiology Domain Expertise
 
 Hello, welcome to my GitHub! You can view my projects and resume here. 
 
